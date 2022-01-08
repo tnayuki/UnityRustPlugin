@@ -1,5 +1,5 @@
-extern crate num;
-use num::complex::Complex;
+extern crate num_complex;
+use num_complex::Complex;
 
 fn mandelbrot(px : i32, py : i32, width : i32, height : i32) -> i32 {
     let x = (px as f32) / (width as f32) * 2.5 - 2.0;

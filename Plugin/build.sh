@@ -9,6 +9,7 @@ UNAME=`uname`
 [ $UNAME = Linux ] && `grep -i -q "microsoft" /proc/version` && IS_WSL="WSL"
 
 [ -n "$1" ] && [ $1 = android ] && IS_ANDROID="Android"
+[ -n "$1" ] && [ $1 = webgl ] && IS_WEBGL="WebGL"
 
 if [ -n "$1" ] && [ $1 = ios ]; then
     IS_IOS="iOS"
@@ -41,6 +42,25 @@ elif [ $IS_ANDROID ]; then
     set -x
     cargo build $OPT --target=$TARGET
     cp target/${TARGET}/release/lib${LIB}.so ${DST}/Android
+
+elif [ $IS_WEBGL ]; then
+
+    TARGET="wasm32-unknown-unknown"
+
+    set -x
+    cargo build $OPT --target=$TARGET
+
+    cat >${DST}/WebGL/mandelbrot.jspre <<EOF
+var request = new XMLHttpRequest();
+request.open("GET", "data:application/wasm;base64,`base64 -i target/${TARGET}/release/${LIB}.wasm`", false);
+request.responseType = "arraybuffer";
+
+request.send(null);
+
+window.mandelbrot = new WebAssembly.Instance(new WebAssembly.Module(request.response));
+window.mandelbrotBufferOffset = window.mandelbrot.exports.memory.buffer.byteLength;
+window.mandelbrot.exports.memory.grow(1024 * 1024 * 4 / 65536);
+EOF
 
 elif [ $IS_WSL ]; then
 

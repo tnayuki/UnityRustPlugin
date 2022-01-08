@@ -8,4 +8,4 @@ name = "mandelbrot"
 crate-type = ["cdylib"]
 
 [dependencies]
-num = "0.1"
+num-complex = "0.4"

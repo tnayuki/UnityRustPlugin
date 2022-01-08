@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 public class Test : MonoBehaviour
 {
-    #if !UNITY_EDITOR && PLATFORM_IOS
+    #if !UNITY_EDITOR && (PLATFORM_IOS || UNITY_WEBGL)
     [DllImport("__Internal", EntryPoint="generate_image")]
     #else
     [DllImport("mandelbrot", EntryPoint="generate_image")]
